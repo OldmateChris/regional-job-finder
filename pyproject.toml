@@ -1,5 +1,5 @@
 [project]
-name = "job-finder"
+name = "regional-job-finder"
 version = "0.1.0"
 description = "CLI tool to search regional jobs using Adzuna API"
 readme = "README.md"
