@@ -38,6 +38,12 @@ def get_jobs(locations=None, keywords=None):
     locations = locations or DEFAULT_LOCATIONS
     keywords = keywords or DEFAULT_KEYWORDS
 
+    if isinstance(locations, str):
+        locations = [locations]
+
+    if isinstance(keywords, str):
+        keywords = [keywords]
+
     all_jobs = []
 
     for location in locations:
