@@ -2,7 +2,7 @@ from regional_job_finder.jobs import get_jobs
 
 
 def test_get_jobs_removes_duplicates(monkeypatch):
-    def fake_fetch_jobs(location, keywords, results_per_page):
+    def fake_fetch_jobs(location, keyword, results_per_page):
         return [
             {"id": "1", "title": "Job A"},
             {"id": "1", "title": "Job A"},  # duplicate
@@ -15,6 +15,6 @@ def test_get_jobs_removes_duplicates(monkeypatch):
         fake_fetch_jobs,
     )
 
-    jobs = get_jobs(locations=["test"], keywords="test")
+    jobs = get_jobs(locations=["test"], keywords=["test"])
 
     assert len(jobs) == 2

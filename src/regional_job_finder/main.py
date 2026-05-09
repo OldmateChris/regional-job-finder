@@ -39,11 +39,11 @@ def main():
     print("Loading resume...")
     resume = load_resume()
 
-    if not resume:
-        print("Could not load resume.")
-        return
+    if resume:
+        print("Resume loaded successfully.\n")
+    else:
+        print("No resume loaded. Continuing without resume matching.\n")
 
-    print("Resume loaded successfully.\n")
     print("Searching for jobs...\n")
 
     jobs = get_jobs()
