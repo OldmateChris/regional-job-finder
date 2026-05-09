@@ -5,12 +5,17 @@ load_dotenv()
 
 DEFAULT_LOCATIONS = ["Mildura", "Red Cliffs", "Merbein", "Robinvale"]
 
-DEFAULT_KEYWORDS = (
-    "export officer OR biosecurity OR grain inspector "
-    "OR QA officer OR compliance officer"
-)
+DEFAULT_KEYWORDS = [
+    "export officer",
+    "biosecurity",
+    "grain inspector",
+    "QA officer",
+    "compliance officer",
+    "admin",
+    "warehouse",
+]
 
-RESULTS_PER_LOCATION = 5
+RESULTS_PER_SEARCH = 5
 
 ADZUNA_URL = "https://api.adzuna.com/v1/api/jobs/au/search/1"
 

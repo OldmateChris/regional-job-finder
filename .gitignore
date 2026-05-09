@@ -2,10 +2,15 @@
 __pycache__/
 *.py[oc]
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
 build/
 dist/
 wheels/
 *.egg-info/
+*.dist-info/
 
 # Virtual environments
 .venv/
@@ -14,6 +19,7 @@ env/
 
 # Environment variables (IMPORTANT)
 .env
+.env.*
 
 # Runtime output
 output/
@@ -24,6 +30,7 @@ resume.txt
 # OS junk files
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # IDEs/editors
 .vscode/

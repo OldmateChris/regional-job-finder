@@ -1,14 +1,15 @@
 import requests
+
 from regional_job_finder.config import (
     ADZUNA_URL,
-    DEFAULT_LOCATIONS,
     DEFAULT_KEYWORDS,
-    RESULTS_PER_LOCATION,
+    DEFAULT_LOCATIONS,
+    RESULTS_PER_SEARCH,
     get_api_credentials,
 )
 
 
-def fetch_jobs_for_location(location, keywords, results_per_page):
+def fetch_jobs_for_location(location, keyword, results_per_page):
     app_id, app_key = get_api_credentials()
 
     if not app_id or not app_key:
@@ -18,7 +19,7 @@ def fetch_jobs_for_location(location, keywords, results_per_page):
     params = {
         "app_id": app_id,
         "app_key": app_key,
-        "what": keywords,
+        "what": keyword,
         "where": location,
         "results_per_page": results_per_page,
     }
@@ -29,7 +30,7 @@ def fetch_jobs_for_location(location, keywords, results_per_page):
         data = response.json()
         return data.get("results", [])
     except requests.RequestException as error:
-        print(f"Error fetching jobs for {location}: {error}")
+        print(f"Error fetching jobs for {location} / {keyword}: {error}")
         return []
 
 
@@ -40,11 +41,11 @@ def get_jobs(locations=None, keywords=None):
     all_jobs = []
 
     for location in locations:
-        jobs = fetch_jobs_for_location(
-            location, keywords, RESULTS_PER_LOCATION
-        )
-        all_jobs.extend(jobs)
+        for keyword in keywords:
+            jobs = fetch_jobs_for_location(
+                location, keyword, RESULTS_PER_SEARCH
+            )
+            all_jobs.extend(jobs)
 
-    # remove duplicates
     unique_jobs = {job["id"]: job for job in all_jobs if "id" in job}
     return list(unique_jobs.values())
