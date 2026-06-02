@@ -4,6 +4,7 @@ from regional_job_finder.matcher import (
     match_job,
     score_jobs,
 )
+from regional_job_finder.resume import extract_resume_skills, get_resume_search_keywords
 
 
 def test_get_jobs_removes_duplicates(monkeypatch):
@@ -93,3 +94,37 @@ def test_filter_jobs_by_score():
 
     assert len(results) == 1
     assert results[0]["match_score"] == 10
+
+
+def test_extract_resume_skills_finds_known_skills():
+    resume_text = """
+    Experienced in Quality Assurance, HACCP, forklift operation,
+    warehouse work, logistics, compliance and SAP reporting.
+    """
+
+    skills = extract_resume_skills(resume_text)
+
+    assert "quality assurance" in skills
+    assert "haccp" in skills
+    assert "forklift" in skills
+    assert "warehouse" in skills
+    assert "logistics" in skills
+    assert "compliance" in skills
+    assert "sap" in skills
+
+
+def test_extract_resume_skills_handles_empty_resume():
+    skills = extract_resume_skills("")
+
+    assert skills == []
+
+
+def test_get_resume_search_keywords_limits_results():
+    resume_text = """
+    quality assurance compliance biosecurity export inspection audit
+    forklift warehouse logistics production supervisor documentation
+    """
+
+    keywords = get_resume_search_keywords(resume_text, limit=5)
+
+    assert len(keywords) == 5
