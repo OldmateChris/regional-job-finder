@@ -12,11 +12,15 @@ def print_jobs(jobs):
         title = job.get("title", "No title")
         company = job.get("company", {}).get("display_name", "Unknown company")
         location = job.get("location", {}).get("display_name", "Unknown location")
+        score = job.get("match_score", 0)
+        matched_skills = job.get("matched_skills", [])
         link = job.get("redirect_url", "No link available")
 
         print(f"{index}. {title}")
         print(f"   Company: {company}")
         print(f"   Location: {location}")
+        print(f"   Match Score: {score}")
+        print(f"   Matched Skills: {', '.join(matched_skills)}")
         print(f"   Link: {link}\n")
 
 

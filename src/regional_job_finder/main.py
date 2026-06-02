@@ -2,6 +2,7 @@ import argparse
 from pathlib import Path
 
 from regional_job_finder.jobs import get_jobs
+from regional_job_finder.matcher import filter_jobs_by_score, score_jobs
 from regional_job_finder.output import print_jobs, save_jobs_to_csv
 
 
@@ -16,6 +17,13 @@ def load_resume():
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Search for regional jobs using Adzuna API"
+    )
+
+    parser.add_argument(
+        "--min-score",
+        type=int,
+        default=0,
+        help="Only show jobs with this match score or higher",
     )
 
     parser.add_argument(
@@ -47,6 +55,8 @@ def main():
     print("Searching for jobs...\n")
 
     jobs = get_jobs()
+    jobs = score_jobs(jobs)
+    jobs = filter_jobs_by_score(jobs, min_score=args.min_score)
 
     print_jobs(jobs)
 
