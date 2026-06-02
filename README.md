@@ -1,6 +1,6 @@
 # Regional Job Finder
 
-A clean, minimal Python CLI tool for searching jobs in regional Victoria using the Adzuna API.
+A Python CLI application that searches for jobs using the Adzuna API and ranks them based on relevance to your professional background.
 
 ---
 
@@ -8,26 +8,50 @@ A clean, minimal Python CLI tool for searching jobs in regional Victoria using t
 
 Regional Job Finder is a command-line application that:
 
-* Searches for jobs across multiple regional locations
-* Uses predefined keywords (logistics, QA, compliance, etc.)
+* Searches for jobs across multiple locations
+* Uses configurable search keywords
 * Fetches results from the Adzuna API
-* Displays jobs in a clean terminal format
+* Scores jobs against resume-inspired skill categories
+* Ranks jobs by relevance
+* Filters jobs using a minimum match score
+* Displays match explanations in the terminal
 * Optionally exports results to CSV
 
-The project is structured using modern Python practices (`src/` layout, `pyproject.toml`, `uv`), and is designed to be simple, extendable, and practical.
+The project follows modern Python practices (`src/` layout, `pyproject.toml`, `uv`) and is designed to be practical, extensible, and easy to maintain.
 
 ---
 
 ## 🚀 Features
 
+### Job Search
+
 * Multi-location job search
 * Keyword-based querying
+* Adzuna API integration
 * Duplicate job removal
-* Clean CLI output
+
+### Resume-Aware Matching
+
+* Resume-inspired skill matching
+* Broad skill-category scoring
+* Match score calculation
+* Match category detection
+* Match skill detection
+* Job ranking by relevance
+* Minimum-score filtering
+
+### Output
+
+* Clean terminal output
+* Match explanations
 * Optional CSV export
-* Timestamped output files
-* Environment-based API configuration
-* Basic test coverage (duplicate handling)
+* Timestamped result files
+
+### Reliability
+
+* Environment-based configuration
+* Unit test coverage
+* Mocked API testing
 
 ---
 
@@ -39,17 +63,17 @@ regional-job-finder/
 ├── src/
 │   └── regional_job_finder/
 │       ├── main.py        # CLI entry point
-│       ├── jobs.py        # API calls and job fetching
-│       ├── config.py      # Default locations and keywords
+│       ├── jobs.py        # Job retrieval and deduplication
+│       ├── matcher.py     # Resume-aware job scoring
+│       ├── config.py      # Search configuration
 │       └── output.py      # Terminal output and CSV export
 │
 ├── tests/
-│   └── test_jobs.py       # Basic test (duplicate removal)
+│   └── test_jobs.py       # Job retrieval and matcher tests
 │
-├── pyproject.toml         # Project config (uv-managed)
-├── uv.lock                # Locked dependencies
-├── .gitignore
-├── resume.txt             # Optional (future use)
+├── pyproject.toml
+├── uv.lock
+├── resume.txt
 └── README.md
 ```
 
@@ -57,22 +81,20 @@ regional-job-finder/
 
 ## ⚙️ Setup
 
-### 1. Clone the repository
+### Clone the repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/regional-job-finder.git
 cd regional-job-finder
 ```
 
-### 2. Install dependencies (using uv)
+### Install dependencies
 
 ```bash
 uv sync
 ```
 
----
-
-### 3. Set up environment variables
+### Configure Adzuna credentials
 
 Create a `.env` file in the project root:
 
@@ -81,20 +103,27 @@ ADZUNA_APP_ID=your_app_id
 ADZUNA_APP_KEY=your_app_key
 ```
 
-Get API credentials here:
+Get API credentials:
+
 https://developer.adzuna.com/
 
 ---
 
 ## ▶️ Running the Application
 
-### Recommended (CLI command)
+Standard run:
 
 ```bash
 uv run job-finder
 ```
 
-### Alternative
+Show only stronger matches:
+
+```bash
+uv run job-finder --min-score 5
+```
+
+Alternative entry point:
 
 ```bash
 uv run python -m regional_job_finder.main
@@ -102,63 +131,40 @@ uv run python -m regional_job_finder.main
 
 ---
 
-## 💾 CSV Export
-
-Save results to CSV:
-
-```bash
-uv run job-finder --csv
-```
-
-Custom output directory:
-
-```bash
-uv run job-finder --csv --output-dir results
-```
-
-Output example:
-
-```text
-output/job_results_2026-05-01_16-30-12.csv
-```
-
----
-
 ## 🧩 CLI Options
 
-| Option         | Description                               |
-| -------------- | ----------------------------------------- |
-| `--csv`        | Save results to a CSV file                |
-| `--output-dir` | Set output directory (default: `output/`) |
+| Option         | Description                                          |
+| -------------- | ---------------------------------------------------- |
+| `--csv`        | Save results to CSV                                  |
+| `--output-dir` | Output directory for CSV files                       |
+| `--min-score`  | Only show jobs at or above the specified match score |
 
 ---
 
-## 📍 Default Configuration
-
-Defined in:
+## 📊 Example Output
 
 ```text
-src/regional_job_finder/config.py
+1. Quality Assurance Officer
+
+   Company: Example Foods
+   Location: Mildura
+   Match Score: 18
+
+   Matched Categories:
+   quality, compliance
+
+   Matched Skills:
+   quality assurance, HACCP, audit, compliance
+
+   Link:
+   https://...
 ```
-
-### Locations
-
-* Mildura
-* Red Cliffs
-* Merbein
-* Robinvale
-
-### Keywords
-
-* export officer
-* biosecurity
-* grain inspector
-* QA officer
-* compliance officer
 
 ---
 
 ## 🧪 Running Tests
+
+Run all tests:
 
 ```bash
 uv run pytest
@@ -166,28 +172,36 @@ uv run pytest
 
 Current test coverage includes:
 
-* Duplicate job removal logic
+* Duplicate job removal
+* Single-string input handling
+* Match scoring
+* Match filtering
+* Job ranking
+* Unrelated-job scoring
 
 ---
 
 ## ⚠️ Current Limitations
 
-* Resume is loaded but not used in matching yet
-* Search is based on fixed keywords
-* No ranking or filtering of results
+* Search keywords are still manually configured
+* Resume parsing is not yet automatic
+* Match scoring is rule-based rather than AI-driven
+* CSV export does not yet include all match metadata
 * No JSON export
-* CLI options are minimal
 
 ---
 
 ## 🔮 Planned Improvements
 
-* Resume keyword extraction
-* Job ranking by relevance
-* Filtering (location, salary, type)
+* Automatic resume keyword extraction
+* Dynamic search keyword generation
+* Match-score export to CSV
+* Salary filtering
+* Location filtering
+* Contract-type filtering
 * JSON export
-* Custom CLI options (keywords, locations)
-* UI (optional)
+* Interactive TUI or GUI
+* AI-assisted ranking and recommendations
 
 ---
 
@@ -195,11 +209,11 @@ Current test coverage includes:
 
 This project was built to:
 
-* Practice clean Python project structure
+* Practice modern Python development
 * Work with external APIs
-* Use modern tooling (`uv`, `pyproject.toml`)
-* Build a practical CLI tool
-* Incrementally improve functionality
+* Build a practical job-search tool
+* Experiment with resume-aware job matching
+* Incrementally develop a recommendation engine
 
 ---
 
