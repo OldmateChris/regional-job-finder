@@ -1,4 +1,9 @@
 from regional_job_finder.jobs import get_jobs
+from regional_job_finder.matcher import (
+    filter_jobs_by_score,
+    match_job,
+    score_jobs,
+)
 
 
 def test_get_jobs_removes_duplicates(monkeypatch):
@@ -36,3 +41,55 @@ def test_get_jobs_accepts_single_string_inputs(monkeypatch):
 
     assert len(jobs) == 1
     assert calls == [("Mildura", "admin")]
+
+
+def test_qa_job_scores_well():
+    job = {
+        "title": "Quality Assurance Officer",
+        "description": "Quality assurance, audit, compliance and HACCP responsibilities",
+    }
+
+    result = match_job(job)
+
+    assert result["match_score"] > 0
+    assert "quality" in result["matched_categories"]
+
+
+def test_unrelated_job_scores_low():
+    job = {
+        "title": "Hairdresser",
+        "description": "Cutting and styling hair",
+    }
+
+    result = match_job(job)
+
+    assert result["match_score"] <= 2
+
+
+def test_jobs_sorted_by_score():
+    jobs = [
+        {
+            "title": "Hairdresser",
+            "description": "Hair styling",
+        },
+        {
+            "title": "Quality Assurance Officer",
+            "description": "QA compliance HACCP audit",
+        },
+    ]
+
+    results = score_jobs(jobs)
+
+    assert results[0]["title"] == "Quality Assurance Officer"
+
+
+def test_filter_jobs_by_score():
+    jobs = [
+        {"match_score": 10},
+        {"match_score": 2},
+    ]
+
+    results = filter_jobs_by_score(jobs, min_score=5)
+
+    assert len(results) == 1
+    assert results[0]["match_score"] == 10

@@ -14,13 +14,19 @@ def print_jobs(jobs):
         location = job.get("location", {}).get("display_name", "Unknown location")
         score = job.get("match_score", 0)
         matched_skills = job.get("matched_skills", [])
+        matched_categories = job.get("matched_categories", [])
         link = job.get("redirect_url", "No link available")
 
         print(f"{index}. {title}")
         print(f"   Company: {company}")
         print(f"   Location: {location}")
         print(f"   Match Score: {score}")
-        print(f"   Matched Skills: {', '.join(matched_skills)}")
+        print(
+            f"   Matched Categories: {', '.join(matched_categories) if matched_categories else 'None'}"
+        )
+        print(
+            f"   Matched Skills: {', '.join(matched_skills) if matched_skills else 'None'}"
+        )
         print(f"   Link: {link}\n")
 
 
