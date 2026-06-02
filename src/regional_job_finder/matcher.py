@@ -183,7 +183,7 @@ def job_to_text(job: dict) -> str:
     return " ".join(_normalise(part) for part in parts)
 
 
-def match_job(job: dict) -> dict:
+def match_job(job: dict, resume_skills: list[str] | None = None) -> dict:
     """
     Score a single job and return a copy of the job with match information.
 
@@ -196,6 +196,8 @@ def match_job(job: dict) -> dict:
     """
     job_text = job_to_text(job)
     title_text = _normalise(job.get("title", ""))
+
+    resume_skills = resume_skills or []
 
     matched_skills = []
     matched_categories = []
@@ -213,6 +215,13 @@ def match_job(job: dict) -> dict:
             matched_categories.append(category)
             matched_skills.extend(category_matches)
             score += len(category_matches) * 2
+
+    resume_skill_matches = []
+
+    for skill in resume_skills:
+        if skill.lower() in job_text:
+            resume_skill_matches.append(skill)
+            score += 2
 
     matched_titles = [
         title for title in BROAD_JOB_TITLES if title.lower() in title_text
@@ -238,13 +247,18 @@ def match_job(job: dict) -> dict:
     matched_job["matched_skills"] = unique_skills
     matched_job["matched_categories"] = matched_categories
     matched_job["matched_titles"] = matched_titles
+    matched_job["matched_resume_skills"] = list(dict.fromkeys(resume_skill_matches))
 
     return matched_job
 
 
-def score_jobs(jobs: list[dict]) -> list[dict]:
+def score_jobs(
+    jobs: list[dict],
+    resume_skills: list[str] | None = None,
+) -> list[dict]:
     """Score all jobs and return them from best match to weakest match."""
-    scored_jobs = [match_job(job) for job in jobs]
+    scored_jobs = [match_job(job, resume_skills=resume_skills) for job in jobs]
+
     return sorted(
         scored_jobs,
         key=lambda job: job.get("match_score", 0),

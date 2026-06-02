@@ -128,3 +128,19 @@ def test_get_resume_search_keywords_limits_results():
     keywords = get_resume_search_keywords(resume_text, limit=5)
 
     assert len(keywords) == 5
+
+
+def test_job_scores_with_resume_skills():
+    job = {
+        "title": "Warehouse Operator",
+        "description": "Forklift operation and inventory control required.",
+    }
+
+    result = match_job(
+        job,
+        resume_skills=["forklift", "inventory"],
+    )
+
+    assert result["match_score"] > 0
+    assert "forklift" in result["matched_resume_skills"]
+    assert "inventory" in result["matched_resume_skills"]
